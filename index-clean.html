@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get in, we are going to drag joy! — The Joydragger</title>
+<meta name="description" content="Independent internet radio from Lagos, hosted by The Joydragger. Afrobeats, highlife, soul, jazz and spoken word — joy as a compass.">
+<meta property="og:title" content="Get in, we are going to drag joy!">
+<meta property="og:description" content="Independent internet radio from Lagos. Drop into a show and listen along.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://joydraggerradio.rocks/">
+<meta name="theme-color" content="#FFC38B">
+<link rel="canonical" href="https://joydraggerradio.rocks/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='%23221A14'/><circle cx='50' cy='50' r='13' fill='%23FFC38B'/></svg>">
+<style>
+:root{
+  --ink:#221A14;          /* warm black */
+  --apricot:#FFC38B;
+  --lilac:#D9C7F5;
+  --mint:#C9E8CE;
+  --butter:#FFE9A8;
+  --rose:#FFC7D1;
+  --sky:#BFDDF5;
+  --cream:#fff6ec;
+  --rule:2px solid var(--ink);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--apricot);
+  color:var(--ink);
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-size:16.5px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--ink);color:var(--apricot)}
+a{color:var(--ink)}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px dashed var(--ink);outline-offset:3px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(1rem,4vw,2.5rem)}
+
+/* ── top bar + menu ──────────────────────── */
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;
+  flex-wrap:wrap;
+  padding:.85rem clamp(1rem,4vw,2.5rem);
+  border-bottom:var(--rule);
+  position:sticky;top:0;background:var(--apricot);z-index:40;
+}
+.topbar .brand{
+  font-family:'IBM Plex Mono',monospace;font-size:.78rem;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;text-decoration:none;white-space:nowrap;
+}
+.menu{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center}
+.menu a{
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  border:var(--rule);border-radius:999px;padding:.28rem .8rem;background:var(--cream);
+  transition:background .12s,color .12s;
+}
+.menu a:hover{background:var(--ink);color:var(--butter)}
+.menu a.support-link{background:var(--rose)}
+.menu a.support-link:hover{background:var(--ink);color:var(--rose)}
+.status{
+  display:flex;align-items:center;gap:.5rem;
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;
+  border:var(--rule);border-radius:999px;padding:.28rem .8rem;background:var(--cream);
+}
+.status .dot{width:.55rem;height:.55rem;border-radius:50%;background:#a08a76}
+.status.is-live{background:var(--ink);color:var(--apricot)}
+.status.is-live .dot{background:var(--apricot);animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.2}}
+@media(max-width:760px){
+  .topbar{justify-content:center;text-align:center}
+}
+
+/* ── ticker ─────────────────────────────── */
+.ticker{
+  overflow:hidden;white-space:nowrap;border-bottom:var(--rule);
+  background:var(--ink);color:var(--butter);
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;padding:.55rem 0;
+}
+.ticker__inner{display:inline-block;padding-left:100%;animation:scroll 60s linear infinite}
+.ticker__inner span{margin-right:3rem}
+.ticker__inner .sep{color:var(--rose)}
+@keyframes scroll{to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion:reduce){
+  .ticker__inner{animation:none;padding-left:1rem;white-space:normal}
+  *{animation-duration:.01ms !important;transition:none !important}
+}
+
+/* ── masthead ───────────────────────────── */
+.masthead{
+  background:var(--apricot);
+  padding:clamp(3rem,8vw,6rem) 0 clamp(2.5rem,6vw,4.5rem);
+  border-bottom:var(--rule);position:relative;overflow:hidden;
+}
+.masthead h1{
+  font-weight:800;font-optical-sizing:auto;
+  font-size:clamp(2.4rem,8.2vw,6.6rem);
+  line-height:.98;letter-spacing:-.02em;text-transform:uppercase;
+  max-width:16ch;position:relative;z-index:2;
+}
+.masthead h1 .joy{white-space:nowrap;position:relative;display:inline-block}
+.masthead h1 .joy svg{position:absolute;left:0;bottom:-.18em;width:100%;height:.32em;overflow:visible}
+.masthead h1 .joy svg path{stroke:var(--cream);stroke-width:7;fill:none;stroke-linecap:round}
+.masthead .meta{margin-top:1.8rem;display:flex;flex-wrap:wrap;gap:.6rem;position:relative;z-index:2}
+.meta span{
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  border:var(--rule);border-radius:999px;padding:.3rem .85rem;background:var(--cream);
+}
+.meta span:nth-child(2){background:var(--lilac);transform:rotate(-1.2deg)}
+.meta span:nth-child(3){background:var(--mint);transform:rotate(.9deg)}
+.sticker{
+  position:absolute;right:clamp(.5rem,5vw,4rem);top:clamp(1.5rem,5vw,3.5rem);
+  width:clamp(96px,14vw,150px);aspect-ratio:1;z-index:1;animation:spin 18s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sticker text{
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:500;
+  letter-spacing:.22em;fill:var(--ink);text-transform:uppercase;
+}
+@media(max-width:700px){.sticker{opacity:.45}}
+
+/* ── sections ───────────────────────────── */
+section{border-bottom:var(--rule);padding:clamp(2.5rem,6vw,4rem) 0;scroll-margin-top:5.5rem}
+#live{background:var(--lilac)}
+#archive{background:var(--mint)}
+#journal{background:var(--butter)}
+#support{background:var(--rose)}
+#about{background:var(--sky)}
+.label{
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  display:inline-block;margin-bottom:1.6rem;
+  background:var(--ink);color:var(--cream);border-radius:999px;padding:.28rem .9rem;
+  transform:rotate(-.6deg);
+}
+h2{
+  font-weight:800;text-transform:uppercase;
+  font-size:clamp(1.5rem,3.2vw,2.2rem);letter-spacing:-.01em;margin-bottom:1.6rem;
+}
+
+/* ── live ───────────────────────────────── */
+.live-body{max-width:44rem}
+.live-body p{margin-bottom:.8rem}
+.live-body .quiet{opacity:.75;font-size:.95rem}
+.player-frame{width:100%;border:var(--rule);border-radius:14px;min-height:120px;margin-top:1.2rem;background:var(--cream)}
+.player-frame.tall{min-height:320px}
+
+/* ── archive grid ───────────────────────── */
+.archive-head{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;justify-content:space-between}
+.random-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:.74rem;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;cursor:pointer;
+  border:var(--rule);border-radius:999px;padding:.6rem 1.3rem;
+  background:var(--cream);transition:transform .12s,background .12s,color .12s;
+  margin-bottom:1.6rem;
+}
+.random-btn:hover{background:var(--ink);color:var(--rose);transform:rotate(-1deg)}
+.ep-grid{display:grid;gap:1.2rem;grid-template-columns:repeat(4,1fr)}
+@media(max-width:1000px){.ep-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.ep-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.ep-grid{grid-template-columns:1fr}}
+.ep{
+  background:var(--cream);border:var(--rule);border-radius:14px;overflow:hidden;
+  cursor:pointer;display:flex;flex-direction:column;
+  transition:transform .14s,box-shadow .14s;box-shadow:4px 4px 0 var(--ink);
+}
+.ep:hover{transform:translate(-2px,-2px) rotate(-.5deg);box-shadow:7px 7px 0 var(--ink)}
+.ep .cover{aspect-ratio:1;width:100%;display:block;border-bottom:var(--rule);object-fit:cover;background:var(--cream)}
+.ep .body{padding:.75rem .85rem .9rem;display:flex;flex-direction:column;gap:.25rem;flex:1}
+.ep .date{font-family:'IBM Plex Mono',monospace;font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;opacity:.6}
+.ep .title{font-weight:600;font-size:.92rem;line-height:1.25}
+.ep .genres{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;opacity:.6;margin-top:auto;padding-top:.4rem}
+
+/* ── now playing dock ───────────────────── */
+.dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;
+  background:var(--cream);border-top:var(--rule);
+  transform:translateY(110%);transition:transform .25s ease;
+  padding:.7rem clamp(1rem,4vw,2.5rem) .8rem;
+  box-shadow:0 -6px 0 rgba(34,26,20,.12);
+}
+.dock.open{transform:translateY(0)}
+.dock .dock-head{
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:.5rem;
+}
+.dock .dock-title{
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dock .close{
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  border:var(--rule);border-radius:999px;padding:.25rem .8rem;background:var(--butter);
+}
+.dock .close:hover{background:var(--ink);color:var(--butter)}
+.dock iframe{width:100%;border:0;height:64px;border-radius:8px}
+.dock .note{font-family:'IBM Plex Mono',monospace;font-size:.74rem;opacity:.75;padding:.2rem 0}
+body.dock-open{padding-bottom:130px}
+.btn-sm{margin-top:0 !important;padding:.45rem 1.1rem !important;font-size:.7rem !important}
+.dock-notice{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.4rem 0}
+
+@media(max-width:760px){
+  body.dock-open{padding-bottom:180px}
+  .dock-notice{flex-direction:column;align-items:stretch;gap:.7rem;text-align:center}
+  .dock-notice .btn{display:block}
+}
+
+/* ── journal ────────────────────────────── */
+.post{max-width:46rem;background:var(--cream);border:var(--rule);border-radius:16px;
+  padding:1.6rem;margin-bottom:1.4rem;box-shadow:5px 5px 0 var(--ink);
+}
+.post:nth-child(even){transform:rotate(.4deg)}
+.post:nth-child(odd){transform:rotate(-.4deg)}
+.post .date{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;opacity:.65}
+.post h3{font-weight:800;font-size:1.35rem;text-transform:uppercase;margin:.4rem 0 .7rem}
+.post .yt{margin-top:1.1rem;aspect-ratio:16/9;width:100%;border:var(--rule);border-radius:12px}
+
+/* ── support ────────────────────────────── */
+.support-grid{display:grid;grid-template-columns:1fr;gap:1.4rem}
+@media(min-width:760px){.support-grid{grid-template-columns:1fr 1fr}}
+.cell{background:var(--cream);border:var(--rule);border-radius:16px;padding:1.7rem;box-shadow:5px 5px 0 var(--ink)}
+.cell:first-child{transform:rotate(-.5deg)}
+.cell:last-child{transform:rotate(.5deg)}
+.cell .big{font-size:2.1rem;display:block;margin-bottom:.4rem}
+.cell h3{font-weight:800;text-transform:uppercase;font-size:1.15rem;margin-bottom:.6rem}
+.btn{
+  display:inline-block;margin-top:1.2rem;text-decoration:none;
+  font-family:'IBM Plex Mono',monospace;font-size:.78rem;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;
+  border:var(--rule);border-radius:999px;padding:.7rem 1.5rem;color:var(--ink);
+  background:var(--butter);transition:transform .12s,background .12s,color .12s;
+}
+.btn:hover{background:var(--ink);color:var(--butter);transform:translate(-2px,-2px)}
+
+/* ── about ──────────────────────────────── */
+.about-grid{display:grid;grid-template-columns:1fr;gap:2rem}
+@media(min-width:760px){.about-grid{grid-template-columns:1.4fr 1fr}}
+.about-grid p+p{margin-top:.9rem}
+.freq{
+  font-family:'IBM Plex Mono',monospace;font-size:.76rem;letter-spacing:.06em;
+  line-height:2.2;text-transform:uppercase;
+  background:var(--cream);border:var(--rule);border-radius:16px;padding:1.4rem;
+  box-shadow:5px 5px 0 var(--ink);transform:rotate(.5deg);align-self:start;
+}
+.freq b{opacity:.55;font-weight:400;margin-right:.6rem}
+.socials{margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:.6rem}
+.socials a{
+  font-family:'IBM Plex Mono',monospace;font-size:.74rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  border:var(--rule);border-radius:999px;padding:.35rem .95rem;background:var(--cream);
+  transition:background .12s,color .12s;
+}
+.socials a:hover{background:var(--ink);color:var(--sky)}
+
+/* ── footer ─────────────────────────────── */
+footer{
+  background:var(--ink);color:var(--apricot);
+  padding:2.6rem clamp(1rem,4vw,2.5rem);
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;
+}
+footer .hi{color:var(--rose)}
+</style>
+</head>
+<body>
+
+<!-- ── top bar + menu ── -->
+<nav class="topbar">
+  <a class="brand" href="#top">The Joydragger · Lagos</a>
+  <div class="menu">
+    <a href="#live">Live</a>
+    <a href="#archive">Archive</a>
+    <a href="#journal">Journal</a>
+    <a href="#about">About</a>
+    <a class="support-link" href="#support">Support ♥</a>
+  </div>
+  <span class="status" id="statusBadge"><span class="dot"></span><span id="statusText">Off air</span></span>
+</nav>
+
+<!-- ── status ticker ── -->
+<div class="ticker" aria-label="Station status">
+  <div class="ticker__inner" id="ticker"></div>
+</div>
+
+<!-- ── masthead ── -->
+<header class="masthead" id="top">
+  <svg class="sticker" viewBox="0 0 150 150" aria-hidden="true">
+    <defs><path id="circ" d="M75,75 m-56,0 a56,56 0 1,1 112,0 a56,56 0 1,1 -112,0"/></defs>
+    <circle cx="75" cy="75" r="26" fill="none" stroke="#221A14" stroke-width="2.5"/>
+    <circle cx="75" cy="75" r="9" fill="#221A14"/>
+    <text><textPath href="#circ">★ dragged by a human ★ joy as a compass&#160;</textPath></text>
+  </svg>
+  <div class="wrap">
+    <h1>Get in, we are going to drag <span class="joy">joy!<svg viewBox="0 0 200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 14 C 24 4, 44 22, 64 12 S 104 4, 124 14 S 168 22, 196 10"/></svg></span></h1>
+    <div class="meta">
+      <span>Independent internet radio</span>
+      <span>Lagos → everywhere</span>
+      <span>Afrobeats · Highlife · Soul · Jazz · Spoken Word</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── live ── -->
+<section id="live">
+  <div class="wrap">
+    <span class="label">01 — Live</span>
+    <div class="live-body" id="liveBody"></div>
+  </div>
+</section>
+
+<!-- ── archive ── -->
+<section id="archive">
+  <div class="wrap">
+    <span class="label">02 — Archive</span>
+    <div class="archive-head">
+      <h2>Past broadcasts</h2>
+      <button class="random-btn" id="randomBtn">▶ Play a random show</button>
+    </div>
+    <div class="ep-grid" id="epGrid"></div>
+  </div>
+</section>
+
+<!-- ── journal ── -->
+<section id="journal">
+  <div class="wrap">
+    <span class="label">03 — Journal</span>
+    <h2>Notes from the station</h2>
+    <div id="posts"></div>
+  </div>
+</section>
+
+<!-- ── support ── -->
+<section id="support">
+  <div class="wrap">
+    <span class="label">04 — Support</span>
+    <h2>Keep the station running</h2>
+    <div class="support-grid">
+      <div class="cell">
+        <span class="big">☕</span>
+        <h3>Buy me a coffee</h3>
+        <p>This station runs on goodwill and caffeine. If a show has ever carried you through traffic, a deadline or a heavy day, a coffee keeps the next one coming.</p>
+        <a class="btn" id="coffeeBtn" href="#" target="_blank" rel="noopener">Buy a coffee</a>
+      </div>
+      <div class="cell">
+        <span class="big">📦💿</span>
+        <h3>Donate records</h3>
+        <p>Vinyl, cassettes or CDs gathering dust? They have a home here — and a good chance of ending up on air with your name in the credits.</p>
+        <a class="btn" id="recordsBtn" href="#">Offer a record</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── about ── -->
+<section id="about">
+  <div class="wrap">
+    <span class="label">05 — About</span>
+    <h2>The Joydragger</h2>
+    <div class="about-grid">
+      <div>
+        <p>Lightworker, joydragger and self-proclaimed internet cheerleader — a firm believer in kindness, joy and love as tools for healing, on the path to living the best life each day using joy as a compass.</p>
+        <p>Formerly resident on Oroko Radio, Accra. Every playlist here is dragged by a human.</p>
+        <div class="socials" id="socials"></div>
+      </div>
+      <div class="freq">
+        <div><b>Frequency</b> Monthly, whenever joy demands</div>
+        <div><b>Signal</b> Live here, archived forever</div>
+        <div><b>Origin</b> Lagos, Nigeria</div>
+        <div><b>Reach</b> Home · car · headphones worldwide</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Get in, we are going to drag joy!</span>
+  <span>For the <span class="hi">curious and tender hearted</span></span>
+    <span id="year"></span>
+</footer>
+
+
+<!-- ── now playing dock ── -->
+<div class="dock" id="dock" aria-live="polite">
+  <div class="dock-head">
+    <span class="dock-title" id="dockTitle">Now playing</span>
+    <button class="close" id="dockClose">✕ Close</button>
+  </div>
+  <div id="dockBody"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   ✏️  EDIT ME — everything you'll ever need to change lives here
+   ═══════════════════════════════════════════════════════════════ */
+const CONFIG = {
+
+  /* 1 ▸ LIVE STREAM — paste your embed URL when you go live and the
+        badge flips to ON AIR automatically. Leave "" when off air.
+        Works with YouTube Live, Mixlr, Radio.co, Twitch embeds.   */
+  liveEmbedUrl: "",
+
+  /* 2 ▸ SUPPORT LINKS */
+  coffeeUrl: "https://buymeacoffee.com/kamnelechukwu",   // or ko-fi / paystack / flutterwave link
+  recordsEmail: "thejoydragger@gmail.com",
+
+  /* 3 ▸ SOCIALS — add or remove freely */
+  socials: [
+    { label: "Mixcloud", url: "https://www.mixcloud.com/joydragger/" },
+    { label: "Instagram", url: "https://www.instagram.com/joydraggerradio/" },
+    { label: "Oroko archive", url: "https://oroko.live/artists/the-joydragger" },
+    { label: "Email", url: "mailto:thejoydragger@gmail.com" },
+  ],
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   ✏️  EPISODES — add your newest show to the TOP of this list.
+   mixcloud: paste the show's normal Mixcloud URL → player embeds.
+   cover:    paste an image URL (your show artwork). Leave "" and
+             the site draws a colorful record-sleeve automatically.
+   ═══════════════════════════════════════════════════════════════ */
+const EPISODES = [
+  { date: "18 Dec 2025", title: "Get in, we are going to drag joy!", tags: ["Afrobeats","Highlife","Soul"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-18th-december-2025/", cover: "" },
+  { date: "20 Nov 2025", title: "Get in, we are going to drag joy!", tags: ["Alternative RnB","Afrobeats","Soul"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-20th-november-2025/", cover: "" },
+  { date: "23 Oct 2025", title: "Get in, we are going to drag joy!", tags: ["Soul","Funk","Ambient"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-23rd-october-2025/", cover: "" },
+  { date: "24 Sep 2025", title: "Get in, we are going to drag joy!", tags: ["RnB","Afrobeats","House"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-25th-september-2025/", cover: "" },
+  { date: "03 Jul 2025", title: "Get in… invites Ola", tags: ["Afrobeat"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-invites-ola/", cover: "" },
+  { date: "05 Jun 2025", title: "Get in, we are going to drag joy!", tags: ["Afro Jazz","Afrobeats","Tishoumaren"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-5th-june-2025/", cover: "" },
+  { date: "08 May 2025", title: "Get in, we are going to drag joy!", tags: ["Jazz Fusion","RnB","Soul"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-8th-may-2025/", cover: "" },
+  { date: "10 Apr 2025", title: "Get in… invites Gr8nes Voke", tags: ["Afro House"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-invites-gr8nes-voke-10th-april-2025/", cover: "" },
+  { date: "13 Feb 2025", title: "Get in, we are going to drag joy!", tags: ["Blues","Alt RnB / Soul","Jazz"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-19th-december-2024/", cover: "" },
+  { date: "19 Dec 2024", title: "Get in, we are going to drag joy!", tags: ["Spoken Word","Soul","Jazz"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-21st-november-2024/", cover: "" },
+  { date: "30 Oct 2024", title: "Get in… invites Wendy Okeke", tags: ["Spoken Word","Soul","RnB"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-invites-wendy-okeke-24-october-2024/", cover: "" },
+  { date: "26 Sep 2024", title: "Get in, we are going to drag joy!", tags: ["Highlife","Alt RnB / Soul","Jazz"], mixcloud: "https://www.mixcloud.com/OrokoRadio/the-joydragger-get-in-we-are-going-to-drag-joy-26th-september-2024/", cover: "" },
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   ✏️  JOURNAL — newest post first. youtube: paste an embed URL
+   (https://www.youtube.com/embed/VIDEO_ID) or leave "".
+   ═══════════════════════════════════════════════════════════════ */
+const POSTS = [
+  {
+    date: "15 Jul 2026",
+    title: "The station has a home",
+    body: "Welcome in. This is where every show, playlist and joyful ramble lives from now on. First broadcast from the new home coming soon — bring a friend.",
+    youtube: "",
+  },
+];
+
+/* ═══════════════════ no need to edit below ═══════════════════ */
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>'"]/g, character => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;",
+  })[character]);
+}
+
+function youtubeEmbedUrl(rawUrl) {
+  if (!rawUrl) return "";
+  try {
+    const url = new URL(rawUrl);
+    if (url.hostname === "youtu.be") return `https://www.youtube.com/embed/${url.pathname.slice(1)}`;
+    if (!url.hostname.endsWith("youtube.com")) return "";
+    if (url.pathname.startsWith("/embed/")) return url.toString();
+    if (url.pathname.startsWith("/live/")) return `https://www.youtube.com/embed/${url.pathname.split("/")[2]}`;
+    const videoId = url.searchParams.get("v");
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+  } catch {
+    return "";
+  }
+}
+
+function isEmbedLink(rawUrl) {
+  try {
+    const url = new URL(rawUrl);
+    return url.pathname.includes("embed") || url.pathname.includes("player") ||
+      url.hostname.includes("mixlr.com") || url.hostname.includes("radio.co");
+  } catch {
+    return false;
+  }
+}
+
+let currentLiveUrl = CONFIG.liveEmbedUrl;
+const latest = EPISODES[0];
+
+const liveBody = document.getElementById("liveBody");
+
+function renderLive(liveUrl) {
+  currentLiveUrl = liveUrl || "";
+  const live = !!currentLiveUrl;
+  document.getElementById("statusBadge").classList.toggle("is-live", live);
+  document.getElementById("statusText").textContent = live ? "On air" : "Off air";
+
+  const bits = [
+    live ? "LIVE NOW — GET IN" : "OFF AIR — ARCHIVE OPEN 24/7",
+    latest ? `LATEST: ${latest.date} — ${latest.tags.join(" / ")}` : "WELCOME",
+    "FOR THE CURIOUS AND TENDER HEARTED",
+    "LAGOS → EVERYWHERE",
+  ];
+  document.getElementById("ticker").innerHTML =
+    Array(4).fill(bits.map(bit => `<span><span class="sep">●</span>  ${escapeHTML(bit)}</span>`).join("")).join("");
+
+  if (!live) {
+    liveBody.innerHTML = `
+      <h2>The station is quiet (for now)</h2>
+      <p>No one is on the mic right now. Live shows are announced on socials — when we're on, the player appears right here.</p>
+      <p class="quiet">Meanwhile the archive below is open all night. Try a random show — it's the closest thing to turning on a real radio.</p>`;
+    return;
+  }
+
+  const youtubeUrl = youtubeEmbedUrl(currentLiveUrl);
+  const embedUrl = youtubeUrl || (isEmbedLink(currentLiveUrl) ? currentLiveUrl : "");
+  liveBody.innerHTML = embedUrl ? `
+    <h2>On air now — get in</h2>
+    <iframe class="player-frame tall" src="${escapeHTML(embedUrl)}"
+      allow="autoplay; encrypted-media" allowfullscreen title="Live broadcast"></iframe>` : `
+    <h2>On air now — get in</h2>
+    <p>The live room is open. Tap through to listen along.</p>
+    <a class="btn" href="${escapeHTML(currentLiveUrl)}" target="_blank" rel="noopener">Open the live broadcast ↗</a>`;
+}
+
+renderLive(currentLiveUrl);
+
+// generated record-sleeve covers (used when cover === "")
+const SLEEVE_COLORS = ["#FFC38B","#D9C7F5","#C9E8CE","#FFE9A8","#FFC7D1","#BFDDF5"];
+function sleeve(i){
+  const bg = SLEEVE_COLORS[i % SLEEVE_COLORS.length];
+  const ring = SLEEVE_COLORS[(i + 2) % SLEEVE_COLORS.length];
+  const ep = String(EPISODES.length - i).padStart(2,"0");
+  const svg =
+   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+      <rect width="200" height="200" fill="${bg}"/>
+      <circle cx="100" cy="100" r="66" fill="#221A14"/>
+      <circle cx="100" cy="100" r="52" fill="none" stroke="${ring}" stroke-width="3"/>
+      <circle cx="100" cy="100" r="40" fill="none" stroke="${ring}" stroke-width="1.5" opacity=".6"/>
+      <circle cx="100" cy="100" r="18" fill="${ring}"/>
+      <circle cx="100" cy="100" r="4" fill="#221A14"/>
+      <text x="14" y="26" font-family="monospace" font-size="15" font-weight="bold" fill="#221A14">EP ${ep}</text>
+    </svg>`;
+  return "data:image/svg+xml," + encodeURIComponent(svg);
+}
+
+// archive grid
+const grid = document.getElementById("epGrid");
+EPISODES.forEach((ep, i) => {
+  const card = document.createElement("article");
+  card.className = "ep";
+  card.setAttribute("role","button");
+  card.setAttribute("tabindex","0");
+  card.dataset.i = i;
+  card.innerHTML = `
+    <img class="cover" src="${ep.cover || sleeve(i)}" alt="Cover art for ${ep.title}, ${ep.date}" loading="lazy">
+    <div class="body">
+      <span class="date">EP ${String(EPISODES.length - i).padStart(2,"0")} · ${ep.date}</span>
+      <span class="title">${ep.title}</span>
+      <span class="genres">${ep.tags.join(" · ")}</span>
+    </div>`;
+  grid.appendChild(card);
+});
+
+// now playing dock
+const dock = document.getElementById("dock");
+const dockBody = document.getElementById("dockBody");
+const dockTitle = document.getElementById("dockTitle");
+function openEpisode(i, autoplay=true){
+  const ep = EPISODES[i];
+  dockTitle.textContent = `Now playing — EP ${String(EPISODES.length - i).padStart(2,"0")} · ${ep.date} · ${ep.tags.join(" / ")}`;
+  if (ep.mixcloud && ep.mixcloud.includes("mixcloud.com")) {
+    const feed = encodeURIComponent(new URL(ep.mixcloud).pathname);
+    dockBody.innerHTML = `<iframe src="https://player-widget.mixcloud.com/widget/iframe?feed=${feed}&hide_cover=1&mini=1&light=1&autoplay=${autoplay?1:0}" allow="autoplay" title="${ep.title}"></iframe>`;
+  } else if (ep.mixcloud && ep.mixcloud.includes("oroko.live")) {
+    dockBody.innerHTML = `
+      <div class="dock-notice note">
+        <p>This show is hosted and archived on Oroko Radio.</p>
+        <a class="btn btn-sm" href="${ep.mixcloud}" target="_blank" rel="noopener" style="background:var(--lilac);">Listen on Oroko Radio ↗</a>
+      </div>`;
+  } else {
+    dockBody.innerHTML = `
+      <div class="dock-notice note">
+        <p>Audio coming soon — this broadcast hasn't been uploaded yet. (Joydragger: paste the Mixcloud link into EPISODES in index.html.)</p>
+      </div>`;
+  }
+  dock.classList.add("open");
+  document.body.classList.add("dock-open");
+}
+document.getElementById("dockClose").addEventListener("click", () => {
+  dock.classList.remove("open");
+  document.body.classList.remove("dock-open");
+  dockBody.innerHTML = "";
+});
+
+grid.addEventListener("click", e => {
+  const card = e.target.closest(".ep");
+  if (card) openEpisode(+card.dataset.i);
+});
+grid.addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") {
+    const card = e.target.closest(".ep");
+    if (card) { e.preventDefault(); openEpisode(+card.dataset.i); }
+  }
+});
+document.getElementById("randomBtn").addEventListener("click", () => {
+  openEpisode(Math.floor(Math.random() * EPISODES.length));
+});
+
+// journal
+function renderPosts(posts) {
+  document.getElementById("posts").innerHTML = POSTS.length ? POSTS.map(post => {
+    const videoUrl = youtubeEmbedUrl(post.youtube);
+    return `
+      <article class="post">
+        <span class="date">${escapeHTML(post.date)}</span>
+        <h3>${escapeHTML(post.title)}</h3>
+        <p>${escapeHTML(post.body).replace(/\n/g, "<br>")}</p>
+        ${videoUrl ? `<iframe class="yt" src="${escapeHTML(videoUrl)}" allowfullscreen title="${escapeHTML(post.title)} video"></iframe>` : ""}
+      </article>`;
+  }).join("") : `
+    <article class="post">
+      <span class="date">The page is waiting</span>
+      <h3>No journal notes yet</h3>
+      <p>The first note is on its way.</p>
+    </article>`;
+}
+
+
+
+// support + socials + year
+document.getElementById("coffeeBtn").href = CONFIG.coffeeUrl;
+document.getElementById("recordsBtn").href =
+  "mailto:" + CONFIG.recordsEmail + "?subject=Records%20for%20the%20station";
+document.getElementById("socials").innerHTML =
+  CONFIG.socials.map(s => `<a href="${s.url}" ${s.url.startsWith("mailto") ? "" : 'target="_blank" rel="noopener"'}>${s.label} ↗</a>`).join("");
+document.getElementById("year").textContent = "© " + new Date().getFullYear() + " · Lagos";
+</script>
+</body>
+</html>
